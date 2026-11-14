@@ -35,3 +35,11 @@
 
 /* Gestión de cotizaciones guardadas */
 .quote-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.saved .quote-actions button{padding:9px 12px}.saved .quote-actions .quote-delete{background:rgba(215,66,91,.12);border:1px solid rgba(243,105,125,.4);color:#ffb6c2}.saved .quote-actions .quote-delete:hover{background:rgba(215,66,91,.25)}.saved .savebar .quote-cancel{background:transparent;border:1px solid #655477;color:#e3d5f7}.saved .quote-editing-note{color:#b8e3cc;font-size:13px;margin-top:0}.quote-item>div:first-child{min-width:0;overflow-wrap:anywhere}@media(max-width:600px){.quote-item{align-items:flex-start;gap:12px;flex-wrap:wrap}.quote-actions{width:100%}.quote-actions button{flex:1}}
+
+/* Acciones discretas de cotizaciones: abrir y eliminar separados */
+.quote-actions{gap:18px;flex-wrap:nowrap}
+.saved .quote-actions button:not(.quote-delete){flex:0 0 auto}
+.saved .quote-actions button.quote-delete{display:inline-flex;align-items:center;justify-content:center;width:35px;height:35px;min-width:35px;flex:0 0 35px;padding:0;border-radius:50%;background:rgba(160,45,60,.10);border:1px solid rgba(220,91,106,.30);color:#c97a85;box-shadow:none;transition:background .18s,color .18s,border-color .18s}
+.saved .quote-actions button.quote-delete:hover{background:rgba(190,55,75,.20);border-color:rgba(230,100,118,.55);color:#f0a0ab}
+.saved .quote-actions button.quote-delete:focus-visible{outline:2px solid #e48c99;outline-offset:3px}
+@media(max-width:600px){.quote-actions{width:auto;gap:16px}.saved .quote-actions button:not(.quote-delete){flex:0 0 auto}.saved .quote-actions button.quote-delete{flex:0 0 35px}}
