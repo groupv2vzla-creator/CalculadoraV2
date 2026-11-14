@@ -52,7 +52,7 @@ export default function Home() {
    biggestLayer ? "📏 *Tamaño aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm" : "📏 *Tamaño aproximado:* Por confirmar",
    "🎨 *Colores y acabados:*",
    activeLayers.length ? activeLayers.map(l => "• *" + displayLayerName(l.name) + ":* " + l.material).join("\n") : "Por confirmar",
-   "💰 *Precio:* " + (customerPrice.trim() && Number(customerPrice)>0 ? usd(Number(customerPrice)) + " BCV" : "Por confirmar"),
+   "💰 *Valor de fabricación de tu proyecto:* " + (customerPrice.trim() && Number(customerPrice)>0 ? usd(Number(customerPrice)) + " BCV" : "Por confirmar"),
    customerNotes.trim() ? "📝 *Observaciones:* " + customerNotes.trim() : "",
    "",
    "💜💵 *¡Puedes comenzar tu proyecto abonando solo el 50%!* 💵💜",
