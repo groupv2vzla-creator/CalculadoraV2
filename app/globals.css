@@ -43,3 +43,9 @@
 .saved .quote-actions button.quote-delete:hover{background:rgba(190,55,75,.20);border-color:rgba(230,100,118,.55);color:#f0a0ab}
 .saved .quote-actions button.quote-delete:focus-visible{outline:2px solid #e48c99;outline-offset:3px}
 @media(max-width:600px){.quote-actions{width:auto;gap:16px}.saved .quote-actions button:not(.quote-delete){flex:0 0 auto}.saved .quote-actions button.quote-delete{flex:0 0 35px}}
+
+/* Duplicar cotización: acción secundaria elegante y accesible */
+.saved .quote-actions .quote-duplicate{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 12px;border:1px solid rgba(157,121,220,.35);border-radius:10px;background:rgba(124,58,237,.10);color:#d5c1f8;font-weight:600;transition:background .18s,border-color .18s}
+.saved .quote-actions .quote-duplicate:hover{background:rgba(124,58,237,.22);border-color:rgba(171,139,231,.6)}
+.saved .quote-actions .quote-duplicate svg{flex:none}
+@media(max-width:600px){.quote-item .quote-actions{width:100%;justify-content:flex-end;gap:10px}.saved .quote-actions .quote-duplicate{padding:9px 10px}.saved .quote-actions button.quote-delete{margin-left:4px}}
