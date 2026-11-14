@@ -67,3 +67,19 @@
 .quote-item .quote-actions{flex:0 0 auto}
 @media(max-width:1100px){.quote-item{flex-wrap:wrap}.quote-item .quote-details{flex:1 1 220px}.quote-item .quote-prices{flex:1 1 330px;max-width:none}.quote-item .quote-actions{width:100%;justify-content:flex-end}}
 @media(max-width:600px){.quote-item .quote-details{flex:1 1 100%}.quote-item .quote-prices{flex:1 1 100%;width:100%;gap:6px}.quote-item .quote-prices>span{padding:8px 4px}.quote-item .quote-prices small{font-size:9px}.quote-item .quote-prices b{font-size:12px}}
+
+/* Asa minimalista de dos líneas para arrastrar y ordenar */
+.saved .quote-actions button.quote-drag-handle{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:28px;height:38px;min-width:28px;padding:4px;border:0;border-radius:8px;background:transparent;box-shadow:none;color:#a99bbf;cursor:grab;touch-action:none;user-select:none}
+.saved .quote-actions button.quote-drag-handle span{display:block;width:17px;height:2px;border-radius:3px;background:currentColor;opacity:.7}
+.saved .quote-actions button.quote-drag-handle:hover{background:rgba(170,135,220,.10);color:#d7c7f0}
+.saved .quote-actions button.quote-drag-handle:active{cursor:grabbing}
+.quote-item.quote-dragging{border-color:rgba(183,128,247,.6);background:rgba(108,75,153,.18);box-shadow:0 0 0 1px rgba(183,128,247,.17)}
+/* Resumen de precios más compacto y menos intenso */
+.quote-item .quote-prices{flex-basis:335px;max-width:335px;gap:6px}
+.quote-item .quote-prices>span{padding:6px 5px;gap:3px;border-radius:7px}
+.quote-item .quote-prices small{font-size:9px;line-height:1.2;opacity:.8}
+.quote-item .quote-prices b{font-size:11px;font-weight:650;text-shadow:none}
+.quote-item .quote-prices .quote-price-sale b{color:#60c9ff;text-shadow:none}
+.quote-item .quote-prices .quote-price-profit b{color:#65e5ac;text-shadow:none}
+@media(max-width:1100px){.quote-item .quote-prices{max-width:none}}
+@media(max-width:600px){.quote-item .quote-prices{flex-basis:100%;gap:5px}.quote-item .quote-prices>span{padding:6px 3px}.quote-item .quote-prices small{font-size:9px}.quote-item .quote-prices b{font-size:11px}}
