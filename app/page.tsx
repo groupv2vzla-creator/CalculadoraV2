@@ -108,7 +108,7 @@ export default function Home() {
    "🎨 *Colores y acabados:*",
    activeLayers.length ? activeLayers.map(l => "• *Material " + (layers.indexOf(l)+1) + ":* " + l.material).join("\n") : "Por confirmar",
    (separator1230>0 || separator1640>0 || screwCaps>0) ? "🔩 *Accesorios incluidos:*\n" + [separator1230>0 ? `• ${separator1230} separador(es) 12 × 30 mm` : "",separator1640>0 ? `• ${separator1640} separador(es) 16 × 40 mm` : "",screwCaps>0 ? `• ${screwCaps} tapa(s) tornillo cromada(s)` : ""].filter(Boolean).join("\n") : "",
-   ledState.enabled ? "💡 *Incluye iluminación LED* ("+ledMeters.toFixed(2)+" m de recorrido)" : "",
+   ledState.enabled ? "💡 *Incluye iluminación LED*" : "",
    "💰 *Valor de fabricación de tu proyecto:* " + (productionCost>0 ? usd(finalPrice) + " BCV" : "Por confirmar"),
    customerNotes.trim() ? "📝 *Observaciones:* " + customerNotes.trim() : "",
    "",
