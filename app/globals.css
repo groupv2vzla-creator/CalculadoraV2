@@ -25,3 +25,8 @@
 .acrylic-swatch{display:inline-block;width:42px;height:42px;flex:0 0 42px;border:1px solid rgba(225,215,240,.45);border-radius:8px;box-shadow:inset 0 1px 2px rgba(255,255,255,.18),0 2px 8px rgba(0,0,0,.15)}@media(max-width:480px){.acrylic-swatch{width:36px;height:36px;flex-basis:36px}}
 
 .acrylic-swatch.empty-swatch{background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(194,177,220,.025));border:1px dashed rgba(213,199,234,.25);box-shadow:none;opacity:.6}
+
+/* Referencias de accesorios más visibles en escritorio y móvil */
+.accessory-title{min-height:64px;gap:12px}
+.accessory-title .reference-thumb{width:64px;height:64px;flex-basis:64px;border-radius:11px}
+@media(max-width:480px){.accessory-title{min-height:56px}.accessory-title .reference-thumb{width:56px;height:56px;flex-basis:56px}}
