@@ -12,6 +12,8 @@ export default function Home() {
  const [message, setMessage] = useState("");
  const [busy, setBusy] = useState(false);
  const [quoteName, setQuoteName] = useState("");
+ const [customerPrice, setCustomerPrice] = useState("");
+ const [customerNotes, setCustomerNotes] = useState("");
  const [quotes, setQuotes] = useState<Array<{id:string;name:string;layers:Layer[];laser_rate:number;created_at:string}>>([]);
  const [materials, setMaterials] = useState<Array<{name:string;price_eighth:number}>>([]);
  const [layers, setLayers] = useState<Layer[]>(initialLayers);
@@ -36,6 +38,25 @@ export default function Home() {
  const materialCost = l.material ? Math.max(0,l.width)*Math.max(0,l.height)/1_000_000/0.3721*custom:0;
  return {...base,supplier:dbPrice,sheetPrice:custom,materialCost,subtotal:materialCost+base.laserCost};
  }), [layers, rate, materials]);
+ const activeLayers = layers.filter(l => l.material && l.width > 0 && l.height > 0);
+ const biggestLayer = activeLayers.reduce<Layer | null>((best,l) => !best || l.width*l.height > best.width*best.height ? l : best, null);
+ const formatCm = (mm:number) => new Intl.NumberFormat("es-VE",{maximumFractionDigits:1}).format(mm/10);
+ const clientBudget = [
+   "*GROUP V2 | PRESUPUESTO*",
+   "",
+   quoteName.trim() ? "*Proyecto:* " + quoteName.trim() : "*Proyecto:* Trabajo personalizado en acrílico",
+   biggestLayer ? "*Tamaño final aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm (ancho × alto)" : "*Tamaño:* Por confirmar",
+   "*Material:* Acrílico de 3 mm",
+   activeLayers.length ? "*Colores y acabados:*\n" + activeLayers.map(l=> "• " + l.name + ": " + l.material).join("\n") : "*Colores:* Por confirmar",
+   customerPrice.trim() && Number(customerPrice)>0 ? "*Precio del trabajo:* " + usd(Number(customerPrice)) : "*Precio:* Por confirmar",
+   customerNotes.trim() ? "*Observaciones:* " + customerNotes.trim() : "",
+   "",
+   "Gracias por confiar en Group V2. Quedamos atentos a tu confirmación."
+ ].filter(Boolean).join("\n");
+ async function copyBudget(){
+   try { await navigator.clipboard.writeText(clientBudget); setMessage("Presupuesto copiado. Ya puedes pegarlo en WhatsApp."); }
+   catch { setMessage("No se pudo copiar automáticamente. Selecciona el texto de la vista previa para copiarlo."); }
+ }
  const material = rows.reduce((s, r) => s + r.materialCost, 0);
  const laser = rows.reduce((s, r) => s + r.laserCost, 0);
  if(checking)return <main className="shell"><p>Verificando acceso...</p></main>;
@@ -53,6 +74,7 @@ export default function Home() {
   <div className="layer-footer"><span>Vexcel ⅛: <b>{usd(rows[i].supplier)}</b></span><span>Material: <b>{usd(rows[i].materialCost)}</b></span><span>Láser: <b>{usd(rows[i].laserCost)}</b></span></div></section>)}</div>
   <section className="saved"><div><p className="eyebrow">CONSUMIBLES V2</p><h2>Empaque y consumibles</h2><p>Introduce las dimensiones generales del trabajo en centímetros. Envoplast estimado por una capa equivalente al área frontal.</p></div><div className="fields"><label>Ancho del logo (cm)<input type="number" min="0" step="0.1" value={packWidth} onChange={e=>setPackWidth(Number(e.target.value))}/></label><label>Alto del logo (cm)<input type="number" min="0" step="0.1" value={packHeight} onChange={e=>setPackHeight(Number(e.target.value))}/></label><label className="wide"><input type="checkbox" checked={includeGlue} onChange={e=>setIncludeGlue(e.target.checked)}/> Incluir cloruro (desactivar si no se usa)</label></div><div className="summary-values"><div><span>Envoplast</span><b>{usd(consumables.envoplast)}</b></div><div><span>Cloruro</span><b>{usd(consumables.glue)}</b></div><div><span>Bolsas · {consumables.bagType}</span><b>{usd(consumables.bags)}</b></div><div><span>Tirro · {consumables.wraps} vueltas</span><b>{usd(consumables.tape)}</b></div><div className="total"><span>TOTAL CONSUMIBLES</span><strong>{usd(consumables.total)}</strong></div></div><p>Para empaques especiales o logos con dimensiones muy grandes, verifica manualmente la cantidad de bolsas. No incluye solapes ni profundidad del envoltorio.</p></section>
   <section className="summary"><div><p className="eyebrow">RESUMEN DE PRODUCCIÓN</p><h2>Costo del trabajo</h2><p>Incluye materiales, corte láser y consumibles. No incluye mano de obra, ensamblaje ni utilidad.</p></div><div className="summary-values"><div><span>Materiales</span><b>{usd(material)}</b></div><div><span>Corte láser</span><b>{usd(laser)}</b></div><div><span>Consumibles</span><b>{usd(consumables.total)}</b></div><div className="total"><span>TOTAL USD</span><strong>{usd(material+laser+consumables.total)}</strong></div></div></section>
+  <section className="saved"><div><p className="eyebrow">PRESUPUESTO PARA CLIENTE</p><h2>Copiar presupuesto</h2><p>Mensaje listo para WhatsApp. Usa la capa de mayor superficie como tamaño final estimado y enumera los colores seleccionados. Los costos internos nunca se comparten.</p></div><div className="fields"><label>Precio de venta al cliente (USD, opcional)<input type="number" min="0" step="0.01" placeholder="No usar el costo interno" value={customerPrice} onChange={e=>setCustomerPrice(e.target.value)}/></label><label className="wide">Observaciones para el cliente (opcional)<input value={customerNotes} placeholder="Ej. Instalación no incluida" onChange={e=>setCustomerNotes(e.target.value)}/></label></div><pre style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere",fontFamily:"inherit",lineHeight:1.6}}>{clientBudget}</pre><button type="button" onClick={()=>void copyBudget()}>Copiar presupuesto</button><p>Revisa el tamaño final antes de enviarlo: las medidas ingresadas en las capas son medidas reservadas de material.</p></section>
   <section className="saved"><div><p className="eyebrow">HISTORIAL PRIVADO</p><h2>Mis cotizaciones</h2><p>Guarda el trabajo actual o recupera uno anterior.</p></div><div className="savebar"><input aria-label="Nombre del trabajo" placeholder="Nombre del trabajo, por ejemplo: Logo recepción" value={quoteName} onChange={e=>setQuoteName(e.target.value)}/><button onClick={()=>void saveQuote()} disabled={busy}>Guardar cotización</button></div>{message&&<p role="status">{message}</p>}<div className="quote-list">{quotes.length===0?<p>Todavía no hay cotizaciones guardadas.</p>:quotes.map(q=><div key={q.id} className="quote-item"><div><strong>{q.name}</strong><small>{new Date(q.created_at).toLocaleDateString("es-VE")}</small></div><button onClick={()=>loadQuote(q)}>Abrir</button></div>)}</div></section>
   <footer>GROUP V2 · Precios Vexcel por ⅛ de lámina (61 × 61 cm) · Referencia 09/11/2026</footer>
  </main>;
