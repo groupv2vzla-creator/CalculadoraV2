@@ -8,7 +8,6 @@ export default function Home() {
  const [user, setUser] = useState<User | null>(null);
  const [checking, setChecking] = useState(true);
  const [email, setEmail] = useState("");
- const [password, setPassword] = useState("");
  const [message, setMessage] = useState("");
  const [busy, setBusy] = useState(false);
  const [quoteName, setQuoteName] = useState("");
@@ -18,7 +17,7 @@ export default function Home() {
  useEffect(() => { supabase.auth.getUser().then(({data}) => { setUser(data.user); setChecking(false); }); const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>setUser(session?.user??null));return ()=>subscription.unsubscribe(); },[]);
  useEffect(() => { if(!user) return; void loadData(); },[user]);
  async function loadData(){const [q,m]=await Promise.all([supabase.from("quotes").select("id,name,layers,laser_rate,created_at").order("created_at",{ascending:false}),supabase.from("materials").select("name,price_eighth").eq("active",true)]);if(q.error)setMessage(q.error.message);else setQuotes(q.data??[]);if(!m.error)setMaterials(m.data??[]);}
- async function login(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage("");const {error}=await supabase.auth.signInWithPassword({email,password});if(error)setMessage(error.message);setBusy(false);}
+ async function login(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage("");if(email.trim().toLowerCase()!=="groupv2.vzla@gmail.com"){setMessage("Utiliza el correo autorizado de Group V2.");setBusy(false);return;}const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin}});setMessage(error?error.message:"Te enviamos un enlace de acceso a tu correo. Ábrelo para entrar.");setBusy(false);}
  async function saveQuote(){if(!user)return;const name=quoteName.trim();if(!name){setMessage("Escribe un nombre para guardar el trabajo.");return;}setBusy(true);setMessage("");const {error}=await supabase.from("quotes").insert({owner_id:user.id,name,layers,laser_rate:rate,material_total:Number(material.toFixed(2)),laser_total:Number(laser.toFixed(2)),total:Number((material+laser).toFixed(2))});if(error)setMessage(error.message);else{setMessage("Cotización guardada.");setQuoteName("");await loadData();}setBusy(false);}
  function loadQuote(q:{layers:Layer[];laser_rate:number;name:string}){setLayers(q.layers);setRate(q.laser_rate);setQuoteName(q.name);setMessage("Trabajo cargado. Puedes modificarlo y guardarlo con otro nombre.");}
 
@@ -35,7 +34,7 @@ export default function Home() {
  const material = rows.reduce((s, r) => s + r.materialCost, 0);
  const laser = rows.reduce((s, r) => s + r.laserCost, 0);
  if(checking)return <main className="shell"><p>Verificando acceso...</p></main>;
- if(!user)return <main className="shell"><div className="login"><div className="logo">V2</div><p className="eyebrow">GROUP V2 · ACCESO PRIVADO</p><h1>Bienvenido de nuevo.</h1><p>Inicia sesión para calcular y guardar tus trabajos.</p><form onSubmit={login}><label>Correo electrónico<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><label>Contraseña<input type="password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button disabled={busy} type="submit">Entrar a mi calculadora</button></form>{message&&<p role="status">{message}</p>}</div></main>;
+ if(!user)return <main className="shell"><div className="login"><div className="logo">V2</div><p className="eyebrow">GROUP V2 · ACCESO PRIVADO</p><h1>Bienvenido de nuevo.</h1><p>Introduce tu correo autorizado. Te enviaremos un enlace seguro para entrar, sin contraseña.</p><form onSubmit={login}><label>Correo electrónico<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><button disabled={busy} type="submit">Enviarme enlace de acceso</button></form>{message&&<p role="status">{message}</p>}</div></main>;
  return <main className="shell">
   <header className="header"><div className="brand"><div className="logo">V2</div><div><strong>GROUP V2</strong><small>Calculadora de producción</small></div></div><div className="top-actions"><span className="tag">ACRÍLICO · 3 MM · ⅛ LÁMINA</span><button className="signout" onClick={()=>void supabase.auth.signOut()}>Salir</button></div></header>
   <section className="hero"><div><p className="eyebrow">COTIZACIÓN INTERNA</p><h1>Calcula con precisión.<br/><em>Produce con confianza.</em></h1><p>Selecciona tus materiales, agrega las medidas reservadas y el tiempo de láser. Los costos se actualizan automáticamente.</p></div><div className="rate"><label htmlFor="rate">Tarifa láser · USD/min</label><input id="rate" type="number" min="0" step="0.01" value={rate} onChange={e=>setRate(Number(e.target.value))}/></div></section>
