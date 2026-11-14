@@ -49,8 +49,10 @@ export default function Home() {
    biggestLayer ? "*Tamaño final aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm (ancho × alto)" : "*Tamaño:* Por confirmar",
    "*Material:* Acrílico de 3 mm",
    activeLayers.length ? "*Colores y acabados:*\n" + activeLayers.map(l=> "• " + displayLayerName(l.name) + ": " + l.material).join("\n") : "*Colores:* Por confirmar",
-   customerPrice.trim() && Number(customerPrice)>0 ? "*Precio del trabajo:* " + usd(Number(customerPrice)) : "*Precio:* Por confirmar",
+   customerPrice.trim() && Number(customerPrice)>0 ? "*Precio del trabajo:* " + usd(Number(customerPrice)) + " BCB" : "*Precio:* Por confirmar",
    customerNotes.trim() ? "*Observaciones:* " + customerNotes.trim() : "",
+   "",
+   "*Forma de pago:* Recuerda que puedes abonar el 50% para iniciar el proceso de producción y el otro 50% al retirar tu producto en nuestra oficina.",
    "",
    "Gracias por confiar en Group V2. Quedamos atentos a tu confirmación."
  ].filter(Boolean).join("\n");
