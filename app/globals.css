@@ -83,3 +83,11 @@
 .quote-item .quote-prices .quote-price-profit b{color:#65e5ac;text-shadow:none}
 @media(max-width:1100px){.quote-item .quote-prices{max-width:none}}
 @media(max-width:600px){.quote-item .quote-prices{flex-basis:100%;gap:5px}.quote-item .quote-prices>span{padding:6px 3px}.quote-item .quote-prices small{font-size:9px}.quote-item .quote-prices b{font-size:11px}}
+
+/* Arrastrar desde la tarjeta completa, sin asa ni flechas */
+.quote-list .quote-item{position:relative;cursor:grab;touch-action:none;user-select:none;transition:background .2s ease,box-shadow .2s ease,border-color .2s ease;animation:quote-arrive .25s ease both}
+.quote-list .quote-item button{cursor:pointer;touch-action:manipulation}
+.quote-list .quote-item.quote-dragging{cursor:grabbing;transition:none;box-shadow:0 15px 35px rgba(0,0,0,.35),0 0 0 1px rgba(183,128,247,.55);opacity:.94}
+.quote-list .quote-item.quote-drop-target{background:rgba(120,84,177,.23);box-shadow:inset 0 0 0 2px rgba(184,146,255,.65);transform:scale(1.008)}
+@keyframes quote-arrive{from{opacity:.85;translate:0 8px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){.quote-list .quote-item{animation:none;transition:none}}
