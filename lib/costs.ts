@@ -14,10 +14,10 @@ export const MIRROR_TAPE_COST_PER_M2 = 12 / (1 * 0.30);
 export const MIRROR_MATERIALS: ReadonlySet<string> = new Set(["Dorado espejo", "Plateado espejo", "Rose gold espejo"]);
 export type Layer = { name: string; material: string; width: number; height: number; minutes: number; override: string };
 export const initialLayers: Layer[] = [
- { name: "Base", material: "Blanco brillante", width: 280, height: 80, minutes: 2, override: "" },
- { name: "Relieve", material: "Negro brillante", width: 250, height: 50, minutes: 1.1, override: "" },
- { name: "Material adicional", material: "", width: 0, height: 0, minutes: 0, override: "" },
- { name: "Material adicional", material: "", width: 0, height: 0, minutes: 0, override: "" }
+ { name: "Material 1", material: "", width: 0, height: 0, minutes: 0, override: "" },
+ { name: "Material 2", material: "", width: 0, height: 0, minutes: 0, override: "" },
+ { name: "Material 3", material: "", width: 0, height: 0, minutes: 0, override: "" },
+ { name: "Material 4", material: "", width: 0, height: 0, minutes: 0, override: "" }
 ];
 export function calculate(layer: Layer, rate = DEFAULT_LASER_RATE) {
  const supplier = MATERIALS.find(m => m.name === layer.material)?.price ?? 0;
