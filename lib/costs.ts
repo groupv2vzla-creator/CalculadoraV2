@@ -6,9 +6,13 @@ export const MATERIALS = [
   { name: "Colores estándar", price: 18.20 },
   { name: "Dorado espejo", price: 24.27 },
   { name: "Plateado espejo", price: 24.27 },
-  { name: "Rose gold espejo", price: 24.27 }
+  { name: "Rose gold espejo", price: 24.27 },
+  { name: "MDF 3 mm", price: 34 / 12 },
+  { name: "MDF 9 mm", price: 46 / 12 }
 ] as const;
 export const EIGHTH_AREA_M2 = 0.61 * 0.61;
+export const MDF_AREA_M2 = 0.60 * 0.60;
+export const MDF_MATERIALS: ReadonlySet<string> = new Set(["MDF 3 mm", "MDF 9 mm"]);
 export const DEFAULT_LASER_RATE = 0.80;
 export const MIRROR_TAPE_COST_PER_M2 = 12 / (1 * 0.30);
 export const MIRROR_MATERIALS: ReadonlySet<string> = new Set(["Dorado espejo", "Plateado espejo", "Rose gold espejo"]);
@@ -24,7 +28,7 @@ export function calculate(layer: Layer, rate = DEFAULT_LASER_RATE) {
  const override = Number(layer.override);
  const sheetPrice = layer.override.trim() !== "" && Number.isFinite(override) && override > 0 ? override : supplier;
  const area = Math.max(0, layer.width) * Math.max(0, layer.height) / 1_000_000;
- const materialCost = layer.material ? area / EIGHTH_AREA_M2 * sheetPrice : 0;
+ const materialCost = layer.material ? area / (MDF_MATERIALS.has(layer.material) ? MDF_AREA_M2 : EIGHTH_AREA_M2) * sheetPrice : 0;
  const laserCost = layer.material ? Math.max(0, layer.minutes) * Math.max(0, rate) : 0;
  const tape3mCost = MIRROR_MATERIALS.has(layer.material) ? area * MIRROR_TAPE_COST_PER_M2 : 0;
  return { supplier, sheetPrice, materialCost, laserCost, tape3mCost, subtotal: materialCost + laserCost + tape3mCost };
