@@ -4,6 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { MATERIALS, initialLayers, calculate, DEFAULT_LASER_RATE, type Layer } from "../lib/costs";
 import { calculateConsumables } from "../lib/consumables";
+const displayLayerName = (name: string) => name === "Letras" ? "Relieve" : name;
 const usd = (n: number) => new Intl.NumberFormat("es-VE", { style: "currency", currency: "USD" }).format(n);
 export default function Home() {
  const [user, setUser] = useState<User | null>(null);
@@ -47,7 +48,7 @@ export default function Home() {
    quoteName.trim() ? "*Proyecto:* " + quoteName.trim() : "*Proyecto:* Trabajo personalizado en acrílico",
    biggestLayer ? "*Tamaño final aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm (ancho × alto)" : "*Tamaño:* Por confirmar",
    "*Material:* Acrílico de 3 mm",
-   activeLayers.length ? "*Colores y acabados:*\n" + activeLayers.map(l=> "• " + l.name + ": " + l.material).join("\n") : "*Colores:* Por confirmar",
+   activeLayers.length ? "*Colores y acabados:*\n" + activeLayers.map(l=> "• " + displayLayerName(l.name) + ": " + l.material).join("\n") : "*Colores:* Por confirmar",
    customerPrice.trim() && Number(customerPrice)>0 ? "*Precio del trabajo:* " + usd(Number(customerPrice)) : "*Precio:* Por confirmar",
    customerNotes.trim() ? "*Observaciones:* " + customerNotes.trim() : "",
    "",
@@ -65,7 +66,7 @@ export default function Home() {
   <header className="header"><div className="brand"><div className="logo">V2</div><div><strong>GROUP V2</strong><small>Calculadora de producción</small></div></div><div className="top-actions"><span className="tag">ACRÍLICO · 3 MM · ⅛ LÁMINA</span><button className="signout" onClick={()=>void supabase.auth.signOut()}>Salir</button></div></header>
   <section className="hero"><div><p className="eyebrow">COTIZACIÓN INTERNA</p><h1>Calcula con precisión.<br/><em>Produce con confianza.</em></h1><p>Selecciona tus materiales, agrega las medidas reservadas y el tiempo de láser. Los costos se actualizan automáticamente.</p></div><div className="rate"><label htmlFor="rate">Tarifa láser · USD/min</label><input id="rate" type="number" min="0" step="0.01" value={rate} onChange={e=>setRate(Number(e.target.value))}/></div></section>
   <div className="section-heading"><h2>Materiales del trabajo</h2><span>4 capas disponibles</span></div>
-  <div className="layers">{layers.map((l,i) => <section className="layer" key={i}><div className="layer-head"><div><span className="number">{String(i+1).padStart(2,"0")}</span><h3>{l.name}</h3></div><strong className="subtotal">{usd(rows[i].subtotal)}</strong></div>
+  <div className="layers">{layers.map((l,i) => <section className="layer" key={i}><div className="layer-head"><div><span className="number">{String(i+1).padStart(2,"0")}</span><h3>{displayLayerName(l.name)}</h3></div><strong className="subtotal">{usd(rows[i].subtotal)}</strong></div>
   <div className="fields"><label className="wide">Material<select value={l.material} onChange={e=>update(i,{material:e.target.value})}><option value="">Seleccionar material</option>{MATERIALS.map(m=><option key={m.name} value={m.name}>{m.name}</option>)}</select></label>
   <label>Ancho reservado (mm)<input type="number" min="0" value={l.width||""} onChange={e=>update(i,{width:Number(e.target.value)})}/></label>
   <label>Alto reservado (mm)<input type="number" min="0" value={l.height||""} onChange={e=>update(i,{height:Number(e.target.value)})}/></label>
