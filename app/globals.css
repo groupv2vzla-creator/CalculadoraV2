@@ -52,3 +52,18 @@
 
 /* Historial: cifras discretas y orden manual persistente */
 .quote-item{gap:18px;align-items:center}.quote-details{flex:1;min-width:0}.quote-prices{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:11px}.quote-prices>span{display:flex;flex-direction:column;gap:3px;min-width:112px}.quote-prices small{font-size:10px;color:rgba(209,200,225,.57);letter-spacing:.015em}.quote-prices b{font-size:12px;font-weight:600;color:rgba(225,215,242,.72);font-variant-numeric:tabular-nums}.quote-order{display:flex;flex-direction:column;gap:5px;margin-right:2px}.saved .quote-actions button.quote-move{display:inline-flex;align-items:center;justify-content:center;width:27px;height:24px;min-width:27px;padding:0;border-radius:7px;border:1px solid rgba(175,153,215,.24);background:rgba(160,140,200,.07);color:#bcb0d2;font-size:16px;font-weight:500}.saved .quote-actions button.quote-move:hover:not(:disabled){background:rgba(151,110,221,.2);color:white}.saved .quote-actions button.quote-move:disabled{opacity:.25}.quote-item .quote-actions{flex-shrink:0}@media(max-width:700px){.quote-item{align-items:flex-start}.quote-prices{gap:9px 13px}.quote-prices>span{min-width:95px}.quote-item .quote-actions{width:100%;justify-content:flex-end;gap:10px}.quote-order{flex-direction:row;margin-right:auto}}
+
+/* Precios en la zona central indicada, con colores del panel de rentabilidad */
+.quote-item{display:flex;align-items:center;gap:20px}
+.quote-item .quote-details{flex:1 1 270px;min-width:175px}
+.quote-item .quote-prices{flex:0 1 390px;min-width:0;max-width:390px;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:center}
+.quote-item .quote-prices>span{min-width:0;display:flex;flex-direction:column;gap:5px;padding:9px 7px;border-radius:9px;background:rgba(21,18,35,.42);border:1px solid rgba(183,128,247,.13);text-align:center}
+.quote-item .quote-prices small{font-size:10px;line-height:1.25;color:#bdb3cc;opacity:.85}
+.quote-item .quote-prices b{font-size:13px;line-height:1.3;font-weight:750;color:#fff;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.quote-item .quote-prices .quote-price-sale{border-color:rgba(56,189,248,.23);background:rgba(12,34,56,.33)}
+.quote-item .quote-prices .quote-price-sale b{color:#60c9ff;text-shadow:0 0 9px rgba(56,189,248,.25)}
+.quote-item .quote-prices .quote-price-profit{border-color:rgba(52,211,153,.23);background:rgba(12,48,38,.29)}
+.quote-item .quote-prices .quote-price-profit b{color:#65e5ac;text-shadow:0 0 9px rgba(52,211,153,.23)}
+.quote-item .quote-actions{flex:0 0 auto}
+@media(max-width:1100px){.quote-item{flex-wrap:wrap}.quote-item .quote-details{flex:1 1 220px}.quote-item .quote-prices{flex:1 1 330px;max-width:none}.quote-item .quote-actions{width:100%;justify-content:flex-end}}
+@media(max-width:600px){.quote-item .quote-details{flex:1 1 100%}.quote-item .quote-prices{flex:1 1 100%;width:100%;gap:6px}.quote-item .quote-prices>span{padding:8px 4px}.quote-item .quote-prices small{font-size:9px}.quote-item .quote-prices b{font-size:12px}}
