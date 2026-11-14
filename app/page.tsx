@@ -5,6 +5,16 @@ import { supabase } from "../lib/supabase";
 import { MATERIALS, initialLayers, calculate, DEFAULT_LASER_RATE, type Layer } from "../lib/costs";
 import { calculateConsumables } from "../lib/consumables";
 const displayLayerName = (name: string) => name === "Letras" ? "Relieve" : name;
+const acrylicSwatch: Record<string, React.CSSProperties> = {
+ "Transparente": {background:"linear-gradient(135deg,rgba(255,255,255,.5),rgba(175,205,230,.12) 48%,rgba(255,255,255,.32))",borderColor:"rgba(210,229,255,.65)"},
+ "Blanco brillante": {background:"linear-gradient(135deg,#fff,#e6e8f1)"},
+ "Negro brillante": {background:"linear-gradient(135deg,#41414a,#07070b 75%)"},
+ "Negro mate": {background:"#18181c"},
+ "Colores estándar": {background:"linear-gradient(135deg,#e4495e 0 25%,#e9bf42 25% 50%,#4296d8 50% 75%,#49b78c 75%)"},
+ "Dorado espejo": {background:"linear-gradient(125deg,#76501d,#fff1aa 36%,#c68c23 65%,#f9dc82)"},
+ "Plateado espejo": {background:"linear-gradient(125deg,#717d8b,#fff 36%,#9da9b8 65%,#e7edf6)"},
+ "Rose gold espejo": {background:"linear-gradient(125deg,#8c5262,#ffe0ce 36%,#c78788 65%,#f5b8a6)"}
+};
 const usd = (n: number) => new Intl.NumberFormat("es-VE", { style: "currency", currency: "USD" }).format(n);
 export default function Home() {
  const [user, setUser] = useState<User | null>(null);
@@ -83,7 +93,7 @@ export default function Home() {
   <header className="header"><div className="brand"><div className="logo"><img src="https://drive.google.com/thumbnail?id=1_VWBCGAwNwhWiTHvWn_VTvUP_jYhjHnD&sz=w200" alt="Logo Group V2" width="52" height="52" style={{width:"100%",height:"100%",objectFit:"contain",borderRadius:"50%"}} onError={e=>{e.currentTarget.style.display="none";e.currentTarget.parentElement!.textContent="V2";}}/></div><div><strong>GROUP V2</strong><small>Calculadora de producción</small></div></div><div className="top-actions"><span className="tag">ACRÍLICO · 3 MM · ⅛ LÁMINA</span><button className="signout" onClick={()=>void supabase.auth.signOut()}>Salir</button></div></header>
   <section className="hero"><div><p className="eyebrow">COTIZACIÓN INTERNA</p><h1>Calcula con precisión.<br/><em>Produce con confianza.</em></h1><p>Selecciona tus materiales, agrega las medidas reservadas y el tiempo de láser. Los costos se actualizan automáticamente.</p></div><div className="rate"><label htmlFor="rate">Tarifa láser · USD/min</label><input id="rate" type="number" min="0" step="0.01" value={rate} onChange={e=>setRate(Number(e.target.value))}/></div></section>
   <div className="section-heading"><h2>Materiales del trabajo</h2><span>4 capas disponibles</span></div>
-  <div className="layers">{layers.map((l,i) => <section className="layer" key={i}><div className="layer-head"><div><span className="number">{String(i+1).padStart(2,"0")}</span><img className="reference-thumb" src={["/reference/base.svg","/reference/relief.svg","/reference/material3.svg","/reference/material4.svg"][i]} alt={`Referencia visual de ${displayLayerName(l.name)}`} width="42" height="42"/><h3>{displayLayerName(l.name)}</h3></div><strong className="subtotal">{usd(rows[i].subtotal)}</strong></div>
+  <div className="layers">{layers.map((l,i) => <section className="layer" key={i}><div className="layer-head"><div><span className="number">{String(i+1).padStart(2,"0")}</span>{i<2?<span className="acrylic-swatch" role="img" aria-label={`Color de acrílico seleccionado: ${l.material||"Sin seleccionar"}`} title={l.material||"Selecciona un material"} style={acrylicSwatch[l.material]??{background:"rgba(220,220,235,.08)",borderStyle:"dashed"}}/>:<img className="reference-thumb" src={["/reference/base.svg","/reference/relief.svg","/reference/material3.svg","/reference/material4.svg"][i]} alt={`Referencia visual de ${displayLayerName(l.name)}`} width="42" height="42"/>}<h3>{displayLayerName(l.name)}</h3></div><strong className="subtotal">{usd(rows[i].subtotal)}</strong></div>
   <div className="fields"><label className="wide">Material<select value={l.material} onChange={e=>update(i,{material:e.target.value})}><option value="">Seleccionar material</option>{MATERIALS.map(m=><option key={m.name} value={m.name}>{m.name}</option>)}</select></label>
   <label>Ancho reservado (mm)<input type="number" min="0" value={l.width||""} onChange={e=>update(i,{width:Number(e.target.value)})}/></label>
   <label>Alto reservado (mm)<input type="number" min="0" value={l.height||""} onChange={e=>update(i,{height:Number(e.target.value)})}/></label>
