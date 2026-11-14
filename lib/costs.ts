@@ -13,7 +13,7 @@ export const DEFAULT_LASER_RATE = 0.80;
 export type Layer = { name: string; material: string; width: number; height: number; minutes: number; override: string };
 export const initialLayers: Layer[] = [
  { name: "Base", material: "Blanco brillante", width: 280, height: 80, minutes: 2, override: "" },
- { name: "Letras", material: "Negro brillante", width: 250, height: 50, minutes: 1.1, override: "" },
+ { name: "Relieve", material: "Negro brillante", width: 250, height: 50, minutes: 1.1, override: "" },
  { name: "Material adicional", material: "", width: 0, height: 0, minutes: 0, override: "" },
  { name: "Material adicional", material: "", width: 0, height: 0, minutes: 0, override: "" }
 ];
