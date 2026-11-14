@@ -1,0 +1,17 @@
+{
+  "name": "Group V2 | Calculadora",
+  "short_name": "Group V2",
+  "description": "Calculadora privada de costos y presupuestos Group V2",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#130b23",
+  "theme_color": "#6d28d9",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
