@@ -43,18 +43,19 @@ export default function Home() {
  const biggestLayer = activeLayers.reduce<Layer | null>((best,l) => !best || l.width*l.height > best.width*best.height ? l : best, null);
  const formatCm = (mm:number) => new Intl.NumberFormat("es-VE",{maximumFractionDigits:1}).format(mm/10);
  const clientBudget = [
-   "*GROUP V2 | PRESUPUESTO*",
+   "Te compartimos por acá el presupuesto para tu proyecto personalizado. ✨🥳",
    "",
-   quoteName.trim() ? "*Proyecto:* " + quoteName.trim() : "*Proyecto:* Trabajo personalizado en acrílico",
-   biggestLayer ? "*Tamaño final aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm (ancho × alto)" : "*Tamaño:* Por confirmar",
-   "*Material:* Acrílico de 3 mm",
-   activeLayers.length ? "*Colores y acabados:*\n" + activeLayers.map(l=> "• " + displayLayerName(l.name) + ": " + l.material).join("\n") : "*Colores:* Por confirmar",
-   customerPrice.trim() && Number(customerPrice)>0 ? "*Precio del trabajo:* " + usd(Number(customerPrice)) + " BCV" : "*Precio:* Por confirmar",
-   customerNotes.trim() ? "*Observaciones:* " + customerNotes.trim() : "",
+   biggestLayer ? "📏 *Tamaño aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm" : "📏 *Tamaño aproximado:* Por confirmar",
+   "🎨 *Colores y acabados:*",
+   activeLayers.length ? activeLayers.map(l => "• *" + displayLayerName(l.name) + ":* " + l.material).join("\n") : "Por confirmar",
+   "💰 *Precio:* " + (customerPrice.trim() && Number(customerPrice)>0 ? usd(Number(customerPrice)) + " BCV" : "Por confirmar"),
+   customerNotes.trim() ? "📝 *Observaciones:* " + customerNotes.trim() : "",
    "",
-   "*Forma de pago:* Recuerda que puedes abonar el 50% para iniciar el proceso de producción y el otro 50% al retirar tu producto en nuestra oficina.",
+   "💜💵 *¡Puedes comenzar tu proyecto abonando solo el 50%!* 💵💜",
+   "Con ese primer abono iniciamos el proceso de producción. El *50% restante lo pagas al retirar tu producto en nuestra oficina.* 📦🚀",
    "",
-   "Gracias por confiar en Group V2. Quedamos atentos a tu confirmación."
+   "✨ ¡Nos encantará darle vida a tu idea!",
+   "💜 Estamos atentos para ayudarte con cualquier duda que tengas."
  ].filter(Boolean).join("\n");
  async function copyBudget(){
    try { await navigator.clipboard.writeText(clientBudget); setMessage("Presupuesto copiado. Ya puedes pegarlo en WhatsApp."); }
