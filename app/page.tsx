@@ -4,7 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { MATERIALS, initialLayers, calculate, DEFAULT_LASER_RATE, type Layer } from "../lib/costs";
 import { calculateConsumables } from "../lib/consumables";
-const displayLayerName = (name: string) => name === "Letras" ? "Relieve" : name;
+const displayLayerName = (name: string) => name;
 const acrylicSwatch: Record<string, React.CSSProperties> = {
  "Transparente": {background:"linear-gradient(135deg,rgba(255,255,255,.5),rgba(175,205,230,.12) 48%,rgba(255,255,255,.32))",borderColor:"rgba(210,229,255,.65)"},
  "Blanco brillante": {background:"linear-gradient(135deg,#fff,#e6e8f1)"},
@@ -31,8 +31,8 @@ export default function Home() {
  const [quotes, setQuotes] = useState<Array<{id:string;name:string;layers:Layer[];laser_rate:number;created_at:string}>>([]);
  const [materials, setMaterials] = useState<Array<{name:string;price_eighth:number}>>([]);
  const [layers, setLayers] = useState<Layer[]>(initialLayers);
- const [packWidth, setPackWidth] = useState(60);
- const [packHeight, setPackHeight] = useState(60);
+ const [packWidth, setPackWidth] = useState(0);
+ const [packHeight, setPackHeight] = useState(0);
  const [includeGlue, setIncludeGlue] = useState(true);
  const [separator1230, setSeparator1230] = useState(0);
  const [separator1640, setSeparator1640] = useState(0);
@@ -44,7 +44,7 @@ export default function Home() {
  async function loadData(){const [q,m]=await Promise.all([supabase.from("quotes").select("id,name,layers,laser_rate,created_at").order("created_at",{ascending:false}),supabase.from("materials").select("name,price_eighth").eq("active",true)]);if(q.error)setMessage(q.error.message);else setQuotes(q.data??[]);if(!m.error)setMaterials(m.data??[]);}
  async function login(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage("");if(!["groupv2.vzla@gmail.com","estudiolaserv2@gmail.com"].includes(email.trim().toLowerCase())){setMessage("Utiliza el correo autorizado de Group V2.");setBusy(false);return;}const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin}});setMessage(error?error.message:"Te enviamos un enlace de acceso. En el teléfono, ábrelo directamente en Safari o Chrome; si Gmail lo abre dentro de la app, elige «Abrir en el navegador».");setBusy(false);}
  async function saveQuote(){if(!user)return;const name=quoteName.trim();if(!name){setMessage("Escribe un nombre para guardar el trabajo.");return;}setBusy(true);setMessage("");const {error}=await supabase.from("quotes").insert({owner_id:user.id,name,layers:layers.map((layer,i)=>i===0?{...layer,packWidth,packHeight,includeGlue,separator1230,separator1640,screwCaps}:layer),laser_rate:rate,material_total:Number(material.toFixed(2)),laser_total:Number(laser.toFixed(2)),total:Number((material+laser+tape3m+consumables.total+separatorTotal).toFixed(2))});if(error)setMessage(error.message);else{setMessage("Cotización guardada.");setQuoteName("");await loadData();}setBusy(false);}
- function loadQuote(q:{layers:Layer[];laser_rate:number;name:string}){setLayers(q.layers);const first=q.layers[0] as Layer & {packWidth?:number;packHeight?:number;includeGlue?:boolean;separator1230?:number;separator1640?:number;screwCaps?:number};setPackWidth(first?.packWidth??60);setPackHeight(first?.packHeight??60);setIncludeGlue(first?.includeGlue??true);setSeparator1230(Math.max(0,Math.floor(first?.separator1230??0)));setSeparator1640(Math.max(0,Math.floor(first?.separator1640??0)));setScrewCaps(Math.max(0,Math.floor(first?.screwCaps??0)));setRate(q.laser_rate);setQuoteName(q.name);setMessage("Trabajo cargado. Puedes modificarlo y guardarlo con otro nombre.");}
+ function loadQuote(q:{layers:Layer[];laser_rate:number;name:string}){setLayers(q.layers.map((layer,i)=>({...layer,name:`Material ${i+1}`})));const first=q.layers[0] as Layer & {packWidth?:number;packHeight?:number;includeGlue?:boolean;separator1230?:number;separator1640?:number;screwCaps?:number};setPackWidth(first?.packWidth??0);setPackHeight(first?.packHeight??0);setIncludeGlue(first?.includeGlue??true);setSeparator1230(Math.max(0,Math.floor(first?.separator1230??0)));setSeparator1640(Math.max(0,Math.floor(first?.separator1640??0)));setScrewCaps(Math.max(0,Math.floor(first?.screwCaps??0)));setRate(q.laser_rate);setQuoteName(q.name);setMessage("Trabajo cargado. Puedes modificarlo y guardarlo con otro nombre.");}
 
  const [rate, setRate] = useState(DEFAULT_LASER_RATE);
  const update = (i: number, patch: Partial<Layer>) => setLayers(old => old.map((l, j) => j === i ? { ...l, ...patch } : l));
@@ -71,7 +71,7 @@ export default function Home() {
    "",
    biggestLayer ? "📏 *Tamaño aproximado:* " + formatCm(biggestLayer.width) + " × " + formatCm(biggestLayer.height) + " cm" : "📏 *Tamaño aproximado:* Por confirmar",
    "🎨 *Colores y acabados:*",
-   activeLayers.length ? activeLayers.map(l => "• *" + displayLayerName(l.name) + ":* " + l.material).join("\n") : "Por confirmar",
+   activeLayers.length ? activeLayers.map(l => "• *Material " + (layers.indexOf(l)+1) + ":* " + l.material).join("\n") : "Por confirmar",
    "💰 *Valor de fabricación de tu proyecto:* " + (productionCost>0 ? usd(finalPrice) + " BCV" : "Por confirmar"),
    customerNotes.trim() ? "📝 *Observaciones:* " + customerNotes.trim() : "",
    "",
@@ -93,7 +93,7 @@ export default function Home() {
   <header className="header"><div className="brand"><div className="logo"><img src="https://drive.google.com/thumbnail?id=1_VWBCGAwNwhWiTHvWn_VTvUP_jYhjHnD&sz=w200" alt="Logo Group V2" width="52" height="52" style={{width:"100%",height:"100%",objectFit:"contain",borderRadius:"50%"}} onError={e=>{e.currentTarget.style.display="none";e.currentTarget.parentElement!.textContent="V2";}}/></div><div><strong>GROUP V2</strong><small>Calculadora de producción</small></div></div><div className="top-actions"><span className="tag">ACRÍLICO · 3 MM · ⅛ LÁMINA</span><button className="signout" onClick={()=>void supabase.auth.signOut()}>Salir</button></div></header>
   <section className="hero"><div><p className="eyebrow">COTIZACIÓN INTERNA</p><h1>Calcula con precisión.<br/><em>Produce con confianza.</em></h1><p>Selecciona tus materiales, agrega las medidas reservadas y el tiempo de láser. Los costos se actualizan automáticamente.</p></div><div className="rate"><label htmlFor="rate">Tarifa láser · USD/min</label><input id="rate" type="number" min="0" step="0.01" value={rate} onChange={e=>setRate(Number(e.target.value))}/></div></section>
   <div className="section-heading"><h2>Materiales del trabajo</h2><span>4 capas disponibles</span></div>
-  <div className="layers">{layers.map((l,i) => <section className="layer" key={i}><div className="layer-head"><div><span className="number">{String(i+1).padStart(2,"0")}</span>{!l.material?<span className="acrylic-swatch empty-swatch" role="img" aria-label="Material sin seleccionar" title="Sin material seleccionado"/>:i<2?<span className="acrylic-swatch" role="img" aria-label={`Color de acrílico seleccionado: ${l.material}`} title={l.material} style={acrylicSwatch[l.material]??{background:"rgba(220,220,235,.12)"}}/>:<img className="reference-thumb" src={["/reference/base.svg","/reference/relief.svg","/reference/material3.svg","/reference/material4.svg"][i]} alt={`Referencia visual de ${displayLayerName(l.name)}`} width="42" height="42"/>}<h3>{displayLayerName(l.name)}</h3></div><strong className="subtotal">{usd(rows[i].subtotal)}</strong></div>
+  <div className="layers">{layers.map((l,i) => <section className="layer" key={i}><div className="layer-head"><div><span className="number">{String(i+1).padStart(2,"0")}</span>{!l.material?<span className="acrylic-swatch empty-swatch" role="img" aria-label="Material sin seleccionar" title="Sin material seleccionado"/>:i<2?<span className="acrylic-swatch" role="img" aria-label={`Color de acrílico seleccionado: ${l.material}`} title={l.material} style={acrylicSwatch[l.material]??{background:"rgba(220,220,235,.12)"}}/>:<img className="reference-thumb" src={["/reference/base.svg","/reference/relief.svg","/reference/material3.svg","/reference/material4.svg"][i]} alt={`Referencia visual de ${displayLayerName(l.name)}`} width="42" height="42"/>}<h3>Material {i+1}</h3></div><strong className="subtotal">{usd(rows[i].subtotal)}</strong></div>
   <div className="fields"><label className="wide">Material<select value={l.material} onChange={e=>update(i,{material:e.target.value})}><option value="">Seleccionar material</option>{MATERIALS.map(m=><option key={m.name} value={m.name}>{m.name}</option>)}</select></label>
   <label>Ancho reservado (mm)<input type="number" min="0" value={l.width||""} onChange={e=>update(i,{width:Number(e.target.value)})}/></label>
   <label>Alto reservado (mm)<input type="number" min="0" value={l.height||""} onChange={e=>update(i,{height:Number(e.target.value)})}/></label>
